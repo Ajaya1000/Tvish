@@ -6,7 +6,7 @@ import {
   Route
 } from 'react-router-dom';
 import { connect } from 'react-redux';
-// import PrivateRoute from './containers/PrivateRoute';
+import PrivateRoute from './containers/PrivateRoute';
 import Login from './containers/Login';
 import Home from './containers/Home/index';
 import * as storage from './utils/storage';
@@ -15,7 +15,7 @@ import {
   TOKEN
 } from './constants';
 import {
-  setCurrentUser
+  setCurrentUser,syncLoggedUser
 } from './actions'
 
 @connect(
@@ -37,6 +37,7 @@ export default class Routes extends React.Component {
   }
 
   componentWillMount() {
+    syncLoggedUser();
     const adminId = parseInt(storage.getStorage(ADMIN_ID), 10)
     const token = storage.getStorage(TOKEN)
 
