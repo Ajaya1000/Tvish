@@ -17,6 +17,7 @@ import {
 import {
   setCurrentUser,syncLoggedUser
 } from './actions'
+import { auth } from 'firebase';
 
 @connect(
   state => {
@@ -37,9 +38,12 @@ export default class Routes extends React.Component {
     setCurrentUser: PropTypes.func.isRequired
   }
 
-  componentWillMount() {
-    syncLoggedUser();
-    const adminId = parseInt(storage.getStorage(ADMIN_ID), 10)
+  componentDidMount() {
+    console.log('component did mount called');
+    const adminId = storage.getStorage(ADMIN_ID);
+   let currentUser= auth().currentUser;
+    console.log(adminId);
+    console.log(currentUser);
     // const token = storage.getStorage(TOKEN)
     if (adminId ) {
       this.props.setCurrentUser({

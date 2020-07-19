@@ -34,15 +34,17 @@ export default class Goods extends React.Component {
       this.state.goodsPerPage,
       this.state.lastNode
     ).then(ans =>{
-      console.log(ans)
+      console.log(ans);
+      this.setState({
+        goodList: ans,
+      })
       ans.forEach((item,index,arr)=>{
         const itemId= arr[index].id;
        getImageURL(itemId).then((url)=>{
           arr[index].url = url;
-          console.log(url)
+          console.log('url of '+ itemId+" "+url)
             this.setState({
               goodList: arr,
-
             })
        });
         

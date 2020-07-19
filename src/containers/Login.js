@@ -6,7 +6,7 @@ import logo from "../assets/images/logo.png";
 import * as storage from "../utils/storage";
 import { USERNAME, PASSWORD, WEBSITE_NAME } from "../constants";
 import {connect} from 'react-redux'
-import {signin} from '../actions'
+import {signin,signup} from '../actions'
 const FormItem = Form.Item;
 
 @connect(
@@ -41,14 +41,14 @@ export default class Login extends React.Component {
       if (!err) {
         console.log(values.username+' '+ values.password)
         console.log(this.props)
-        this.props.dispatch(signin(values.username, values.password));       
+       await this.props.dispatch(signin(values.username, values.password));       
         
         console.log("signin succesful");
         if (this.props.error) {
           message.error(this.props.error);
-          this.setState({
-            isAuthenticated: true
-          })
+          message.success('creating new account');
+          await this.props.dispatch(signup(values.username, values.password))
+          message.success("account creation succesful");
         } else {
           message.success("Landed successfully");
         }
