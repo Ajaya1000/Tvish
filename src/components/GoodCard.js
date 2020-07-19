@@ -9,12 +9,12 @@ import {
 } from 'antd';
 
 export default class GoodCard extends React.Component {
-  static propTypes = {
-    good: PropTypes.object,
-    handleEdit: PropTypes.func.isRequired,
-    handleIncrease: PropTypes.func.isRequired,
-    handleDecrease: PropTypes.func.isRequired,
-  }
+  // static propTypes = {
+  //   good: PropTypes.object,
+  //   handleEdit: PropTypes.func.isRequired,
+  //   handleIncrease: PropTypes.func.isRequired,
+  //   handleDecrease: PropTypes.func.isRequired,
+  // }
 
   handleEdit = () => {
     this.props.handleEdit(this.props.good)
@@ -39,6 +39,10 @@ export default class GoodCard extends React.Component {
         [`warning-color`]: good.inventory === 0
       }
     )
+    console.log(good);
+    console.log('inside goodcard good.url is ' + good.url);
+    console.log('inside goodcard good.name is ' + good.name);
+    
 
     return (
       <Col span={8} style={{padding: "8px"}}>
@@ -49,7 +53,7 @@ export default class GoodCard extends React.Component {
               className="good-card-img"
             >
               <img
-                src={good.image}
+                src={good.url}
                 alt = "product"
               />
             </div>
@@ -74,16 +78,16 @@ export default class GoodCard extends React.Component {
               />]
           }
         >
-          <h4 className="good-card-header">{good.goodName}</h4>
+          <h4 className="good-card-header">{good.ame}</h4>
           <ul className="good-card-content-list">
             <li className="good-card-content-item">
               <div className="good-card-item-block">
                 < p className = "good-card-item-title" > Productid </p>
-                <p>{good.goodId} </p>
+                <p>{good.id} </p>
               </div>
               <div className="good-card-item-block">
                 <p className="good-card-item-title">classification</p>
-                <p>{good.category.categoryName} </p>
+                <p>{good.category} </p>
               </div>
             </li>
             <li className="good-card-content-item">

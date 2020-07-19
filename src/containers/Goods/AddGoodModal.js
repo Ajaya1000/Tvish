@@ -17,43 +17,39 @@ import {
   serviceStart,
   serviceEnd
 } from '@/actions';
+import { postProduct } from '../../firebase';
 
 const FormItem = Form.Item
 
-// function getBase64(img, callback) {
-//   const reader = new FileReader();
-//   reader.addEventListener('load', () => callback(reader.result));
-//   reader.readAsDataURL(img);
-// }
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
 
-@connect(
-  state => ({
-    adminId: state.auth.admin.adminId,
-    token: state.auth.admin.token,
-    inService: state.service.inService
-  }),
-  dispatch => ({
-    authError: (errorMessage) => dispatch(authError(errorMessage)),
-    serviceStart: () => dispatch(serviceStart()),
-    serviceEnd: () => dispatch(serviceEnd())
-  })
-)
+// @connect(
+//   state => ({
+//     adminId: state.auth.admin.adminId,
+//     token: state.auth.admin.token,
+//     inService: state.service.inService
+//   }),
+//   dispatch => ({
+//     authError: (errorMessage) => dispatch(authError(errorMessage)),
+//     serviceStart: () => dispatch(serviceStart()),
+//     serviceEnd: () => dispatch(serviceEnd())
+//   })
+// )
 @Form.create()
-export default class AddGoodMOdal extends React.Component {
-  static propTypes = {
-    adminId: PropTypes.number.isRequired,
-    token: PropTypes.string.isRequired,
-    inService: PropTypes.bool.isRequired,
-    authError: PropTypes.func.isRequired,
-    form: PropTypes.object.isRequired,
-    handleCancel: PropTypes.func.isRequired,
-    handleSubmit: PropTypes.func.isRequired,
-    visible: PropTypes.bool.isRequired
-  }
-
+export default class AddGoodModal extends React.Component {
   state = {
     loading: false,
-    uploaded: false
+    uploaded: false,
+    category: 'all',
+    imageUrl: '',
+    file:null
   }
 
   beforeUpload = (file) => {
@@ -75,21 +71,6 @@ export default class AddGoodMOdal extends React.Component {
 
     return false;
   }
-
-  // handleChange = (info) => {
-  //   if (info.file.status === 'uploading') {
-  //     this.setState({ loading: true });
-  //     return;
-  //   }
-  //   if (info.file.status === 'done') {
-  //     // Get this url from response in real world.
-  //     getBase64(info.file.originFileObj, imageUrl => this.setState({
-  //       imageUrl,
-  //       loading: false,
-  //     }));
-  //   }
-  // }
-
   handleSubmit = (e) => {
     e.preventDefault()
 
@@ -99,49 +80,51 @@ export default class AddGoodMOdal extends React.Component {
         return ;
       }
 
-      this.postGood(values)
+       postProduct(values.goodName,this.state.category,values.image.file,values.price,values.originalPrice,values.spec,values.origin);
+      // postProduct
+      this.props.handleCancel();
     })
   }
 
-  postGood = async (good) => {
-    const {
-      adminId,
-      token,
-      authError,
-      handleSubmit,
-      serviceStart,
-      serviceEnd
-    } = this.props
+  // postGood = async (good) => {
+  //   const {
+  //     adminId,
+  //     token,
+  //     authError,
+  //     handleSubmit,
+  //     serviceStart,
+  //     serviceEnd
+  //   } = this.props
 
-    try {
-      serviceStart()
+  //   try {
+  //     serviceStart()
 
-      const res = await goodService.create(
-        adminId,
-        token,
-        good,
-        good.image.file
-      )
-      serviceEnd()
-      message.success("Successfully added product")
-      handleSubmit()
-      }
-      catch (err) {
-        serviceEnd()
-        if (err.response === undefined) {
-          const errorMessage = 'Server error, please try again later'
-          authError(errorMessage)
-        }
-        if (err.response.status === 401) {
-          const errorMessage = 'Your login has expired, please log in again'
-          authError(errorMessage)
-      }
-      if (err.response.status === 400) {
-        const errorMessage = err.response.data.message
-        message.error(errorMessage)
-      }
-    }
-  }
+  //     const res = await goodService.create(
+  //       adminId,
+  //       token,
+  //       good,
+  //       good.image.file
+  //     )
+  //     serviceEnd()
+  //     message.success("Successfully added product")
+  //     handleSubmit()
+  //     }
+  //     catch (err) {
+  //       serviceEnd()
+  //       if (err.response === undefined) {
+  //         const errorMessage = 'Server error, please try again later'
+  //         authError(errorMessage)
+  //       }
+  //       if (err.response.status === 401) {
+  //         const errorMessage = 'Your login has expired, please log in again'
+  //         authError(errorMessage)
+  //     }
+  //     if (err.response.status === 400) {
+  //       const errorMessage = err.response.data.message
+  //       message.error(errorMessage)
+  //     }
+  //   }
+  // }
 
   renderUploadButton() {
     return (
@@ -155,13 +138,38 @@ export default class AddGoodMOdal extends React.Component {
       </Button>
     )
   }
-
+  handleChange = ({
+    fileList
+  }) => this.setState({
+    fileList
+  });
   priceValidator = (rule, value, callback) => {
     if (value <= 0) {
      callback('Price must be greater than 0')
     }
     callback()
   }
+  categoryChange=(val) =>{
+    this.setState({
+      category:val
+    })
+  }
+
+    handleCancel = () => this.setState({
+      previewVisible: false
+    });
+
+    handlePreview = async file => {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+
+      this.setState({
+        previewImage: file.url || file.preview,
+        previewVisible: true,
+        previewTitle: file.name || file.url.substring(file.url.lastIndexOf('/') + 1),
+      });
+    };
 
   render() {
     const {
@@ -172,8 +180,8 @@ export default class AddGoodMOdal extends React.Component {
 
     const { getFieldDecorator } = form
     const uploadButton = this.renderUploadButton()
-    const imageUrl = this.state.imageUrl
-
+    // const imageUrl = this.state.imageUrl
+    console.log(this.state.category);
     return (
       <Modal
         visible={visible}
@@ -205,10 +213,10 @@ export default class AddGoodMOdal extends React.Component {
               <FormItem label = "Product category:" > {
                 getFieldDecorator('categorySecondId', {
                   rules: [{
-                    required: true,
+                    required: false,
                     message: 'Please select product category'
                   }]
-                })( <CategorySelector />
+                })( <CategorySelector onChange={this.categoryChange} value={this.state.category} />
                 )
               } 
               </FormItem> 
@@ -222,16 +230,27 @@ export default class AddGoodMOdal extends React.Component {
                   listType = "picture"
                   className = "avatar-uploader"
                   showUploadList = {
-                    false
+                    true
+                  }
+                  onChange = {
+                    this.handleChange
                   }
                   beforeUpload = {
                     this.beforeUpload
                   }>
                   {
-                    imageUrl ? <img src = {
-                      imageUrl
-                    }
-                    alt = "" /> : uploadButton
+                    // (this.state.previewImage) ? < img style = {
+                    //   {
+                    //     width: '50px',
+                    //     height: '50px'
+                    //   }
+                    // }
+                    // src = {
+                    //   `data:image/jpeg;base64,${this.state.previewImage}`
+
+                    // }
+                    // alt = "" / >:
+                     uploadButton
                   } </Upload>
                 )
               } </FormItem>
