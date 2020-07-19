@@ -1,14 +1,12 @@
 import React from "react";
-import { connect } from "react-redux";
-import * as actions from "../actions";
 import { Form, Input, Button, Checkbox, Spin, message } from "antd";
 import Copyright from "../components/Copyright";
 import { Redirect } from "react-router-dom";
-import PropTypes from "prop-types";
 import logo from "../assets/images/logo.png";
 import * as storage from "../utils/storage";
 import { USERNAME, PASSWORD, WEBSITE_NAME } from "../constants";
-
+import {connect} from 'react-redux'
+import {signin} from '../actions'
 const FormItem = Form.Item;
 
 @connect(
@@ -16,29 +14,17 @@ const FormItem = Form.Item;
     error: state.auth.error,
     isAuthenticated: state.auth.isAuthenticated,
     isFetching: state.auth.isFetching,
-  }),
-  actions
+  })
 )
 @Form.create()
 export default class Login extends React.Component {
   state = {
-    token: "",
-    adminId: "",
+    isAuthenticated: false,
     username: "",
     password: "",
   };
 
-  static propTypes = {
-    error: PropTypes.string.isRequired,
-    isAuthenticated: PropTypes.bool.isRequired,
-    isFetching: PropTypes.bool.isRequired,
-  };
-
   componentWillMount() {
-    if (this.props.location.state) {
-      message.warning(this.props.location.state.message);
-    }
-
     const username = storage.getStorage(USERNAME);
     const password = storage.getStorage(PASSWORD);
 
@@ -53,13 +39,16 @@ export default class Login extends React.Component {
 
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        // await this.props.signin(values.username, values.password)
-        // console.log(actions.signin(values.username, values.password));
         console.log(values.username+' '+ values.password)
-        this.props.signin(values.username, values.password);
+        console.log(this.props)
+        this.props.dispatch(signin(values.username, values.password));       
+        
         console.log("signin succesful");
         if (this.props.error) {
           message.error(this.props.error);
+          this.setState({
+            isAuthenticated: true
+          })
         } else {
           message.success("Landed successfully");
         }
@@ -71,13 +60,14 @@ export default class Login extends React.Component {
           storage.removeStorage(USERNAME, values.username);
           storage.removeStorage(PASSWORD, values.password);
         }
+
       }
     });
   };
 
   render() {
-    const { isAuthenticated, isFetching, form } = this.props;
-
+    const { isFetching, form } = this.props;
+    const {isAuthenticated} = this.props;
     const { getFieldDecorator } = form;
 
     const { username, password } = this.state;

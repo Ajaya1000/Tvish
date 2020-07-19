@@ -52,11 +52,11 @@ export default class Orders extends React.Component {
     status: ORDER_WAIT
   }
 
-  componentDidMount() {
-    const status = 0
+  // componentDidMount() {
+  //   const status = 0
 
-    this.loadOrders()
-  }
+  //   this.loadOrders()
+  // }
 
   loadOrders = (params = {}) => {
     const {

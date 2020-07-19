@@ -2,7 +2,7 @@ import { FETCH_TOKEN, SET_CURRENT_USER, AUTH_ERROR } from "./types";
 import { ADMIN_ID, TOKEN } from "../constants";
 import * as utils from "../utils";
 // import authService from '../services/authService';
-import { signIn, signOut, authOnChange, signUp } from "../firebase";
+import { signIn, signOut, auth, signUp } from "../firebase";
 
 function fetchToken() {
   return {
@@ -72,8 +72,8 @@ function signout() {
   };
 }
 function syncLoggedUser() {
-  return async (dispatch) => {
-    await authOnChange()
+  return (dispatch) => {
+     auth().onAuthStateChanged()
       .then((user) => dispatch(setCurrentUser(user)))
       .catch((error) => {
         return dispatch(authError(error.message));

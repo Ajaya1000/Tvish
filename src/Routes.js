@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,6 +9,7 @@ import PrivateRoute from './containers/PrivateRoute';
 import Login from './containers/Login';
 import Home from './containers/Home/index';
 import * as storage from './utils/storage';
+import PropTypes from 'prop-types'
 import {
   ADMIN_ID,
   TOKEN
@@ -33,18 +33,17 @@ import {
 export default class Routes extends React.Component {
   static propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
+    //  
     setCurrentUser: PropTypes.func.isRequired
   }
 
   componentWillMount() {
     syncLoggedUser();
     const adminId = parseInt(storage.getStorage(ADMIN_ID), 10)
-    const token = storage.getStorage(TOKEN)
-
-    if (adminId && token) {
+    // const token = storage.getStorage(TOKEN)
+    if (adminId ) {
       this.props.setCurrentUser({
         adminId,
-        token
       })
     }
   }
@@ -54,7 +53,7 @@ export default class Routes extends React.Component {
       <Router>
         <Switch>
           <Route path="/signin" component={Login}/>
-          <Route exract component={Home}/>
+          <PrivateRoute exract component={Home}/>
         </Switch>
       </Router>
     )

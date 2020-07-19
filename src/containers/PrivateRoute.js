@@ -5,12 +5,6 @@ import {
   Route,
   Redirect
 } from 'react-router-dom';
-// import storage from '../utils';
-// import {
-//   USER_ID,
-//   TOKEN
-// } from '../constants';
-
 @connect(
   state => {
     return {
@@ -22,22 +16,6 @@ export default class PrivateRoute extends React.Component {
   static propTypes = {
     isAuthenticated: PropTypes.bool.isRequired
   }
-
-  static state = {
-    isAuthenticated: false
-  }
-
-  // componentWillMount() {
-  //   const userId = storage.getStorage(USER_ID)
-  //   const token = storage.getStorage(TOKEN)
-
-  //   if (token && userId) {
-  //     this.setState({
-  //       isAuthenticated: true
-  //     })
-  //   }
-  // }
-
   handleRender = () => {
     const {
       component: ComposedComponent
@@ -62,6 +40,7 @@ export default class PrivateRoute extends React.Component {
     }
   }
 
+  
   render() {
     const {
       component,

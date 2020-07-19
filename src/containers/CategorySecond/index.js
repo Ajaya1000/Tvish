@@ -35,9 +35,9 @@ export default class Adv extends React.Component {
     deleteModalVisible: false
   }
 
-  componentDidMount() {
-    this.props.loadCategories()
-  }
+  // componentDidMount() {
+  //   this.props.loadCategories()
+  // }
 
   handleAddFormOpen = () => {
     this.setState({

@@ -2,21 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
   Layout,
-  Tabs,
   Row,
   Col,
   Icon,
-  Tooltip,
-  Card
+
 } from 'antd';
 import MetaBox from '@/components/MetaBox';
-import Panel from '@/components/Panel';
+
 import OrderCharts from './OrderCharts';
 import ConversionCharts from './ConversionCharts';
-import {
-  statisticsOrder
-} from '../../actions';
-
 @connect(
   state => ({
     success: state.orders.success, 
@@ -30,26 +24,9 @@ import {
     dispatching: state.orders.dispatching, // 配送中
     collection: state.orders.collection, // 收藏数量
     adminId: state.auth.admin.adminId, // 管理员id
-    token: state.auth.admin.token, // token
-  }),
-  dispatch => ({
-    fetchOrderStatus: (adminId, token) => dispatch(statisticsOrder(adminId, token))
   })
 )
 export default class Dashboard extends React.Component {
-  componentDidMount() {
-    this.fetchOrderStatus()
-  }
-
-  fetchOrderStatus = async () => {
-    const {
-      adminId,
-      token
-    } = this.props
-
-    await this.props.fetchOrderStatus(adminId, token)
-  }
-
   render() {
     const {
       wait,
@@ -103,18 +80,6 @@ export default class Dashboard extends React.Component {
             </MetaBox>
           </Col>
         </Row>
-        {/* <Panel style={{marginTop: '30px'}}>
-          <Panel.Body type="light">
-            <Tabs defaultActiveKey="1">
-              <Tabs.TabPane tab="订单概要" key="1">
-                <OrderCharts />
-              </Tabs.TabPane>
-              <Tabs.TabPane tab="收藏转化率" key="2">
-                <ConversionCharts />
-              </Tabs.TabPane>
-            </Tabs>
-          </Panel.Body>
-        </Panel> */}
         <Row gutter={24} style={{marginTop: '30px'}}>
           <Col span={12} style={{bakcground: '#fff'}}>
             <OrderCharts

@@ -45,9 +45,9 @@ export default class Orders extends React.Component {
     sortedInfo: null
   }
 
-  componentDidMount() {
-    this.loadOrders()
-  }
+  // componentDidMount() {
+  //   this.loadOrders()
+  // }
 
   loadOrders = async (params) => {
     const {

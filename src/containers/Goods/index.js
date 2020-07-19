@@ -1,7 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { fetchGoods } from "@/actions/index";
 import Panel from "@/components/Panel";
 import GoodCard from "@/components/GoodCard";
 import { Row, Col, Icon, Layout, Button, Pagination } from "antd";
@@ -10,23 +7,11 @@ import AddGoodModal from "./AddGoodModal";
 import BePutInStorage from "./BePutInStorage";
 import DecreaseInventory from "./DecreaseInventory";
 import SelectorHeader from "./SelectorHeader";
-import { importGoods } from "../../firebase";
-// import {importGoods} from '@/firebase'
+import {
+  importGoods,
+  getImageURL
+} from "../../firebase";
 const { Body } = Panel;
-
-// @connect(
-//   state => ({
-//     adminId: state.auth.admin.adminId,
-//     token: state.auth.admin.token,
-//     isFetching: state.goods.isFetching,
-//     goods: state.goods.goods,
-//     total: state.goods.total,
-//     pageNum: state.goods.pageNum
-//   }),
-//   dispatch => ({
-//     fetchGoods: (adminId, token, good, pageNum) => dispatch(fetchGoods(adminId, token, good, pageNum))
-//   })
-// )
 
 export default class Goods extends React.Component {
   state = {
@@ -43,69 +28,32 @@ export default class Goods extends React.Component {
     goodsPerPage: 100,
     lastNode: null,
   };
-
-  // static propTypes = {
-  //   adminId: PropTypes.number.isRequired,
-  //   token: PropTypes.string.isRequired,
-  //   isFetching: PropTypes.bool.isRequired,
-  //   goods: PropTypes.array.isRequired,
-  //   total: PropTypes.number.isRequired,
-  //   pageNum: PropTypes.number.isRequired,
-  //   fetchGoods: PropTypes.func.isRequired,
-  // }
-  fetchProducts = async () => {
-    var ans = await importGoods(
+  fetchProducts = () => {
+   importGoods(
       this.state.currentPage,
       this.state.goodsPerPage,
       this.state.lastNode
-    );
-      this.setState({
-        goodList:ans,
-        lastNode:ans[ans.length-1].id
+    ).then(ans =>{
+      console.log(ans)
+      ans.forEach((item,index,arr)=>{
+        const itemId= arr[index].id;
+       getImageURL(itemId).then((url)=>{
+          arr[index].url = url;
+          console.log(url)
+            this.setState({
+              goodList: arr,
+
+            })
+       });
+        
       })
+      
+    })
+    
   };
   componentDidMount() {
     this.fetchProducts();
-    // var size = newProductList.length;
-    // this.setState({
-    //   goodList:newProductList,
-    //   lastNode: newProductList[size-1].id
-    // })
-    // const {
-    //   adminId,
-    //   token,
-    //   pageNum
-    // } = this.props
-    // const { searchGood } = this.state
-
-    // fetch good information
-    // this.props.fetchGoods(adminId, token, searchGood, pageNum)
   }
-
-  handleSelectorChange = (values) => {
-    this.setState({
-      searchGood: values,
-    });
-
-    const { adminId, token, pageNum } = this.props;
-
-    // fetch good information
-    this.props.fetchGoods(adminId, token, values, pageNum);
-  };
-
-  handleChange = (pagination, filters, sorter) => {
-    this.setState({
-      filteredInfo: filters,
-      sortedInfo: sorter,
-    });
-  };
-
-  handlePageChange = (pageNum) => {
-    const { adminId, token, goods } = this.props;
-
-    this.props.fetchGoods(adminId, token, goods, pageNum);
-  };
-
   handleAddModalShow = () => {
     this.setState({
       addFormVisible: true,
@@ -140,52 +88,13 @@ export default class Goods extends React.Component {
       putInFormVisible: false,
       decreaseFormVisible: false,
     });
-  };
-
-  handleCreateSuccess = () => {
-    this.setState({
-      addFormVisible: false,
-    });
-
-    this.fetchGoods();
-  };
-
-  handleUpateSuccess = () => {
-    this.setState({
-      updateFormVisible: false,
-    });
-
-    this.fetchGoods();
-  };
-
-  handleUpInSuccess = () => {
-    this.setState({
-      putInFormVisible: false,
-    });
-
-    this.fetchGoods();
-  };
-
-  handleDecreaseSuccess = () => {
-    this.setState({
-      decreaseFormVisible: false,
-    });
-
-    this.fetchGoods();
-  };
-
-  fetchGoods = () => {
-    const { adminId, token, pageNum } = this.props;
-    const { searchGood } = this.state;
-    this.props.fetchGoods(adminId, token, searchGood, pageNum);
+    this.fetchProducts();
   };
 
   renderGood = () => {
     const goods = this.state.goodList ? this.state.goodList : [];
     const processedGoods = [];
     const goodList = [];
-
-    // 处理商品列表数据，数组首个为null，放button用
     for (let i = 0, len = goods.length; i < len; ) {
       if (i === 0) {
         processedGoods.push([null, ...goods.slice(0, 2)]);
@@ -201,6 +110,7 @@ export default class Goods extends React.Component {
       const rows = [];
       row.map((item, itemId) => {
         if (null !== item) {
+          console.log(item.url);
           rows.push(
             <GoodCard
               good={item}

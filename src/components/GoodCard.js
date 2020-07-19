@@ -1,12 +1,7 @@
-import React from 'react';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import {
-  Col,
-  Card,
-  Button,
-  Icon
-} from 'antd';
+import React from "react";
+import classNames from "classnames";
+import PropTypes from "prop-types";
+import { Col, Card, Button, Icon } from "antd";
 
 export default class GoodCard extends React.Component {
   // static propTypes = {
@@ -17,72 +12,62 @@ export default class GoodCard extends React.Component {
   // }
 
   handleEdit = () => {
-    this.props.handleEdit(this.props.good)
-  }
+    this.props.handleEdit(this.props.good);
+  };
 
   handleIncrease = () => {
-    this.props.handleIncrease(this.props.good)
-  }
+    this.props.handleIncrease(this.props.good);
+  };
 
   handleDecrease = () => {
-    this.props.handleDecrease(this.props.good)
-  }
+    this.props.handleDecrease(this.props.good);
+  };
 
   render() {
-    const {
-      good
-    } = this.props
+    const { good } = this.props;
 
-    const inventoryClasses = classNames(
-      `good-card-item-block`,
-      {
-        [`warning-color`]: good.inventory === 0
-      }
-    )
+    const inventoryClasses = classNames(`good-card-item-block`, {
+      [`warning-color`]: good.inventory === 0,
+    });
     console.log(good);
-    console.log('inside goodcard good.url is ' + good.url);
-    console.log('inside goodcard good.name is ' + good.name);
-    
-
+    console.log("inside goodcard good.url is " + good.url);
+    console.log("inside goodcard good.name is " + good.name);
+    for (let i in good) {
+      console.log(i);
+    }
     return (
-      <Col span={8} style={{padding: "8px"}}>
+      <Col span={8} style={{ padding: "8px" }}>
         <Card
           className="good-card"
           cover={
-            <div
-              className="good-card-img"
-            >
-              <img
-                src={good.url}
-                alt = "product"
-              />
+            <div className="good-card-img">
+              <img src={good.url} alt="product" />
             </div>
           }
           hoverable
-          actions={
-            [
-              <Icon
-                style={{width: "100%", height: "100%"}}
-                type="edit"
-                onClick={this.handleEdit}
-              />,
-              <Icon
-                style={{width: "100%", height: "100%"}}
-                type="plus"
-                onClick={this.handleIncrease}
-              />,
-              <Icon
-                style={{width: "100%", height: "100%"}}
-                type="minus"
-                onClick={this.handleDecrease}
-              />]
-          }
+          actions={[
+            <Icon
+              style={{ width: "100%", height: "100%" }}
+              type="edit"
+              onClick={this.handleEdit}
+            />,
+            <Icon
+              style={{ width: "100%", height: "100%" }}
+              type="plus"
+              onClick={this.handleIncrease}
+            />,
+            <Icon
+              style={{ width: "100%", height: "100%" }}
+              type="minus"
+              onClick={this.handleDecrease}
+            />,
+          ]}
         >
           <h4 className="good-card-header">{good.ame}</h4>
           <ul className="good-card-content-list">
             <li className="good-card-content-item">
               <div className="good-card-item-block">
-                < p className = "good-card-item-title" > Productid </p>
+                <p className="good-card-item-title"> Productid </p>
                 <p>{good.id} </p>
               </div>
               <div className="good-card-item-block">
@@ -91,18 +76,21 @@ export default class GoodCard extends React.Component {
               </div>
             </li>
             <li className="good-card-content-item">
-              <div className="good-card-item-block active-color" style={{fontWeight: '600'}}>
+              <div
+                className="good-card-item-block active-color"
+                style={{ fontWeight: "600" }}
+              >
                 <p className="good-card-item-title">current price</p>
                 <p>{good.price} rupees</p>
               </div>
               <div className="good-card-item-block">
-                < p className = "good-card-item-title" > Original price </p>
+                <p className="good-card-item-title"> Original price </p>
                 <p>{good.originalPrice} rupees</p>
               </div>
             </li>
             <li className="good-card-content-item">
               <div className={inventoryClasses}>
-                < p className = "good-card-item-title" > in stock </p>
+                <p className="good-card-item-title"> in stock </p>
                 <p>{good.inventory} case</p>
               </div>
               <div className="good-card-item-block">
@@ -123,6 +111,6 @@ export default class GoodCard extends React.Component {
           </ul>
         </Card>
       </Col>
-    )
+    );
   }
 }

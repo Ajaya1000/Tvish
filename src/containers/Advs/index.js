@@ -37,9 +37,9 @@ export default class Adv extends React.Component {
     deleteValue: {}
   }
 
-  componentDidMount() {
-    this.props.fetchAdvs()
-  }
+  // componentDidMount() {
+  //   this.props.fetchAdvs()
+  // }
 
   handleChange = (pagination, filters, sorter) => {
     this.setState({

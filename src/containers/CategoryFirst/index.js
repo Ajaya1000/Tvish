@@ -20,18 +20,15 @@ import {
     token: state.auth.admin.token,
     categories: state.categories.first.categories,
     isFetching: state.categories.first.isFetching
-  }),
-  dispatch => ({
-    getCategories: () => dispatch(fetchCategories())
   })
 )
 export default class CategoryFirst extends React.Component {
-  static propTypes = {
-    adminId: PropTypes.number.isRequired,
-    token: PropTypes.string.isRequired,
-    categories: PropTypes.array.isRequired,
-    isFetching: PropTypes.bool.isRequired
-  }
+  // static propTypes = {
+  //   adminId: PropTypes.number.isRequired,
+  //   token: PropTypes.string.isRequired,
+  //   categories: PropTypes.array.isRequired,
+  //   isFetching: PropTypes.bool.isRequired
+  // }
 
   state = {
     addFormVisible: false,
@@ -41,9 +38,9 @@ export default class CategoryFirst extends React.Component {
     updateFormValue: {}
   }
 
-  componentDidMount() {
-    this.props.getCategories()
-  }
+  // componentDidMount() {
+  //   this.props.getCategories()
+  // }
 
   handleUpdateSuccess = () => {
     this.setState({

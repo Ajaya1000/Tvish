@@ -18,7 +18,9 @@ var signUp = async (email, password) =>
 const signOut = async () => auth().signOut();
 const signIn = async (email, password) =>
   await auth().signInWithEmailAndPassword(email, password);
-var authOnChange = async () => auth().onAuthStateChanged((user) => user);
+
+
+// var authOnChange = async () => auth().onAuthStateChanged((user) => user);
 
 var postProduct = (
   name,
@@ -68,9 +70,7 @@ var importGoods = async (currentPage, goodsPerPage, lastNode) => {
       .limitToFirst(parseInt(goodsPerPage));
   }
   var goodList = [];
-  var imageRef = firebase
-    .storage()
-    .ref("users/" + currentUser.uid + "/products");
+  
 
   var ans ;
   var temp;
@@ -83,58 +83,44 @@ var importGoods = async (currentPage, goodsPerPage, lastNode) => {
     for (let itemId in snapshot) {
       goodList.push(itemId);
     }
-    // return goodList;
-    // console.log(goodList);//var promise =
-    // return Promise.all(
-      // for (const [key, value] of Object.entries(temp)) {
-      //   var a = {};
-      //   // console.log(key+ " : " + value)
-      //   a.id = key;
-      //   for (const [pkey, pvalue] of Object.entries(value)) {
-      //     a[pkey] = pvalue;
-      //   }
-      //   ans.push(a);
-      // }
-    ans =Promise.all(
+    ans = Promise.all(
         goodList.map((itemId) => {
           var a = {};
           a.id = itemId;
           for (const [pkey, pvalue] of Object.entries(snapshot[itemId])) {
             a[pkey] = pvalue;
           }
-          imageRef.child(`${itemId}.jpg`).getDownloadURL().then(url=>{
-            a.url = url;
-          });
+          // let url='url';
+
+          // (async()=>{
+          // url = await imageRef.child(`${itemId}.jpg`).getDownloadURL();
+          // console.log('url is ' + url);
+          // })();
           // a.url=url;
           return a;
         })
       )
     })
+  // ans.forEach((item,index,arr)=> {
 
-    // promise.then()
-    // for(let item in snapshot){
-    //   // var childNode=;
-    //   var url = await imageRef.child(`${item}.jpg`).getDownloadURL();
-
-    // }
-    // console.log('goodList is'+goodList)
-    // return goodList;
-  // });
-  // console.log( temp)
-  // console.log('  outside type of temp is ' + (typeof temp))
-  
+  // })
   console.log('type of ans is ' + (typeof ans))
   console.log(ans);
   return ans;
 };
-
+var getImageURL = async (itemId) => {
+    var currentUser = firebase.auth().currentUser;
+    return firebase
+      .storage()
+      .ref("users/" + currentUser.uid + "/products").child(`${itemId}.jpg`).getDownloadURL();
+}
 export {
   signUp,
   signOut,
   signIn,
-  authOnChange,
   db,
   auth,
   postProduct,
   importGoods,
+  getImageURL
 };

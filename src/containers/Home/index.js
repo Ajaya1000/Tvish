@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-  Route
+  Route,Redirect
 } from 'react-router-dom';
 import {
   Layout
@@ -25,6 +25,7 @@ import {
 
 @connect(
   state => ({
+    isAuthenticated: state.auth.isAuthenticated,
     adminId: state.auth.admin.adminId,
     token: state.auth.admin.token
   }),
@@ -52,6 +53,7 @@ export default class Home extends React.Component {
     const superLevel = this.state.superLevel
 
     return (
+      (this.props.isAuthenticated!==true)?<Redirect to='/signin' />:
       <div className="page page-home">
         <Layout>
           <Sidebar collapsed={this.state.collapsed} permission={superLevel}/>

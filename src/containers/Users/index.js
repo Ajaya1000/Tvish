@@ -22,11 +22,6 @@ import {
     token: state.auth.admin.token,
     isFetching: state.users.isFetching,
     users: state.users.users
-  }),
-  dispatch => ({
-    fetchUsers: (adminId, token) => {
-      dispatch(fetchUsers(adminId, token))
-    }
   })
 )
 export default class Users extends React.Component {
@@ -82,11 +77,6 @@ export default class Users extends React.Component {
   setUpdateFormRef = (form) =>{
     this.updateForm = form
   }
-
-  componentDidMount() {
-    this.props.fetchUsers(this.props.adminId, this.props.token)
-  }
-
   handleChange = (pagination, filters, sorter) => {
     this.setState({
       filteredInfo: filters,
