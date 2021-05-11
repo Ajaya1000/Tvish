@@ -38,7 +38,7 @@
     "html-webpack-plugin": "2.29.0",
     "immutable": "^3.8.2",
     "jest": "20.0.4",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.21",
     "mockjs": "^1.0.1-beta3",
     "node-sass": "^4.14.1",
     "normalize.css": "^8.0.0",
